@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  table: one
+  user: one
+  date: 2019-03-28 16:07:17
+  morning: false
+
+two:
+  table: two
+  user: two
+  date: 2019-03-28 16:07:17
+  morning: false
