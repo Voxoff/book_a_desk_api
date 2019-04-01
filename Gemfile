@@ -50,6 +50,5 @@ gem "active_model_serializers", "~> 0.10.9"
 
 gem "faker"
 gem 'pry-rails'
-gem 'omniauth-github'
 gem 'dotenv-rails'
 gem 'rest-client'
