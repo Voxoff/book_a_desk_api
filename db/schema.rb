@@ -42,6 +42,8 @@ ActiveRecord::Schema.define(version: 2019_03_28_160717) do
     t.string "bio"
     t.string "avatar"
     t.string "email"
+    t.string "username"
+    t.string "oauth_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

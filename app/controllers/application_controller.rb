@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::API
-    before_action :authorized
+  before_action :authorized
 
   def encode_token(payload)
     JWT.encode(payload, 'my_s3cr3t')
@@ -7,6 +7,14 @@ class ApplicationController < ActionController::API
 
   def auth_header
     request.headers['Authorization']
+  end
+
+
+  before_action :skip_session
+
+ ## Skip sessions and cookies for Rails API
+  def skip_session
+      request.session_options[:skip] = true
   end
 
   def decoded_token

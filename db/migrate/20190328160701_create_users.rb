@@ -10,6 +10,8 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.string :bio
       t.string :avatar
       t.string :email
+      t.string :username
+      t.string :oauth_token
 
       t.timestamps
     end
