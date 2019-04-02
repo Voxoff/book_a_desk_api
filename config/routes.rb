@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       resources :tables
       post '/login', to: 'auth#create'
       get '/profile', to: 'users#profile'
+      post 'auth/github/callback', to: 'users#omniauth'
     end
   end
 
