@@ -4,7 +4,6 @@ module Calendar
       @service = set_up
     end
 
-
     def set_up
       require 'google/apis/calendar_v3'
       require 'googleauth'
@@ -45,43 +44,48 @@ module Calendar
       credentials
     end
 
-    def new_event(table)
+    def new_event(table, date)
       require 'date'
       require 'active_support/time'
 
-      puts table.name
-      event = Google::Apis::CalendarV3::Event.new({
-        location: 'Ive',
+      dt = DateTime.now.advance(days: 3)
+      Google::Apis::CalendarV3::Event.new({
+        location: table.name,
         start: {
-          date_time: DateTime.now.to_s,
+          date_time: dt.to_s,
         },
         end: {
-          date_time: DateTime.now.advance(hours: 2).to_s
+          date_time: dt.advance(hours: 2).to_s
         },
         attendees: [{email: 'lpage@example.com'}]
       })
-      event
     end
 
-    def add_event
-      new_event
-      result = service.insert_event('primary', event)
+    def add_event(table)
+      event = new_event(table)
+      @service.insert_event('primary', event)
     end
 
-    def list_events
-      calendar_id = 'primary'
-      response = service.list_events(calendar_id,
-                                    max_results: 10,
-                                    single_events: true,
-                                    order_by: 'startTime',
-                                    time_min: DateTime.now.rfc3339)
-      puts 'Upcoming events:'
-      puts 'No upcoming events found' if response.items.empty?
-      response.items.each do |event|
-        start = event.start.date || event.start.date_time
-      puts "- #{event.summary} (#{start})"
+    def find_events_on_day(date, time_bool)
+      if time_bool == "morning"
+        time_min = date
+        time_max = date.advance(hours: 12)
+      else
+        time_min = date.advance(hours: 13)
+        time_max = date.advance(hours: 21)
+      end
+      @service.list_events('primary',
+                          max_results: 3,
+                          time_min: time_min.to_s,
+                          time_max: time_max.to_s)
     end
 
+    def list_events(date)
+      @service.list_events('primary',
+                           max_results: 10,
+                           single_events: true,
+                           order_by: 'startTime',
+                           time_min: DateTime.parse(date))
     end
   end
 end
