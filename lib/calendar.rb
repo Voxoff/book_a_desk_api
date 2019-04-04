@@ -44,40 +44,46 @@ module Calendar
       credentials
     end
 
-    def new_event(table, date)
+    def new_event(table, date, time)
       require 'date'
       require 'active_support/time'
 
-      dt = DateTime.now.advance(days: 3)
+      time_min, time_max = calc_time(time_bool)
+
       Google::Apis::CalendarV3::Event.new({
         location: table.name,
         start: {
-          date_time: dt.to_s,
+          date_time: time_min.to_s,
         },
         end: {
-          date_time: dt.advance(hours: 2).to_s
+          date_time: time_max.to_s
         },
         attendees: [{email: 'lpage@example.com'}]
       })
     end
 
-    def add_event(table)
-      event = new_event(table)
+    def add_event(table, date, time)
+      event = new_event(table, date, time)
       @service.insert_event('primary', event)
     end
 
     def find_events_on_day(date, time_bool)
-      if time_bool == "morning"
-        time_min = date
+      time_min, time_max = calc_time(time_bool)
+      @service.list_events('primary',
+                          max_results: 3,
+                          time_min: time_min.to_s,
+                          time_max: time_max.to_s)
+    end
+
+    def calc_time(time_bool)
+       if time_bool == "morning"
+        time_min = date.advance(hours: 9)
         time_max = date.advance(hours: 12)
       else
         time_min = date.advance(hours: 13)
         time_max = date.advance(hours: 21)
       end
-      @service.list_events('primary',
-                          max_results: 3,
-                          time_min: time_min.to_s,
-                          time_max: time_max.to_s)
+      return [time_min, time_max]
     end
 
     def list_events(date)

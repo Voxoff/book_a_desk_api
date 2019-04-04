@@ -1,7 +1,7 @@
 class Api::V1::TablesController < ApplicationController
   def index
     if params[:date]&.present? && params[:time]&.present?
-      date = DateTime.parse(params[:date])
+      date = format_date(params[:date])
       results = calender_api(date, params[:time])
       get_available_tables(results)
     end
@@ -9,10 +9,22 @@ class Api::V1::TablesController < ApplicationController
     render json: { tables: @tables }
   end
 
+  def add_bookings
+    if params[:date]&.present? && params[:time]&.present? && params[:table]&.present?
+      @calendar = Calendar::Calendar.new
+      @table = Table.where(name: params[:table])
+      date = format_date(params[:date])
+      @calendar.add_event(@table, date, params[:time])
+    end
+    render json: { message: "added"}
+  end
+
   private
 
-  def add_bookings
-
+  def format_date(date)
+    binding.pry
+    puts params[:date]
+    DateTime.parse(date)
   end
 
   def calendar_api(date, time)
