@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       get '/profile', to: 'users#profile'
       post 'auth/github/callback', to: 'users#omniauth'
       post '/tables', to: 'tables#index'
+      post 'add_booking', to: 'tables#add_booking'
     end
   end
 
