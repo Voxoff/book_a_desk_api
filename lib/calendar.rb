@@ -49,7 +49,7 @@ module Calendar
       require 'active_support/time'
 
       time_min, time_max = calc_time(date, time_bool)
-
+      u = current_user
       Google::Apis::CalendarV3::Event.new({
         location: table_name,
         start: {
@@ -58,7 +58,8 @@ module Calendar
         end: {
           date_time: time_max.to_s
         },
-        attendees: [{email: 'lpage@example.com'}]
+        text: "##{u.username} (#{u.email}) has booked #{table.name}",
+        attendees: [{email: u.email.to_s}]
       })
     end
 

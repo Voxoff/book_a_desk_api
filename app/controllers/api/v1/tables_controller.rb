@@ -1,8 +1,10 @@
 class Api::V1::TablesController < ApplicationController
   def index
+        # binding.pry
     if params[:date]&.present? && params[:time]&.present?
       date = format_date(params[:date])
       results = calendar_api(date, params[:time])
+      # binding.pry
       @tables = get_available_tables(results)
     end
     @tables ||= Table.all
@@ -10,6 +12,7 @@ class Api::V1::TablesController < ApplicationController
   end
 
   def add_booking
+
     if params[:date]&.present? && params[:time]&.present? && params[:name]&.present?
       @calendar = Calendar::Calendar.new
       @table_name = Table.where(name: params[:name]).pluck(:name).first
@@ -35,11 +38,10 @@ class Api::V1::TablesController < ApplicationController
     if results.items.empty?
       @tables = Table.all
     elsif results.items.size >= 3
-      @tables = []
+      @tables = Table.all.each(&:active)
     else
       tables_in_use = results.items.collect(&:location)
-      # tell me ruby isn't pretty
-      @tables = Table.where.not(name: tables_in_use)
+      @tables = Table.all.each {|table| table.active = true if tables_in_use.include?(table.name)}
     end
   end
 end
