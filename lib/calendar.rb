@@ -44,40 +44,35 @@ module Calendar
       credentials
     end
 
-    def new_event(table_name, date, time_bool)
+    def new_event(table_name, date, time_bool, user)
       require 'date'
       require 'active_support/time'
 
       time_min, time_max = calc_time(date, time_bool)
-      u = current_user
       Google::Apis::CalendarV3::Event.new({
         location: table_name,
-        start: {
-          date_time: time_min.to_s,
-        },
-        end: {
-          date_time: time_max.to_s
-        },
-        text: "##{u.username} (#{u.email}) has booked #{table.name}",
-        attendees: [{email: u.email.to_s}]
+        start: { date_time: time_min.to_s },
+        end: { date_time: time_max.to_s },
+        text: "##{user.username} (#{user.email}) has booked #{table_name}",
+        attendees: [{email: user.email.to_s}]
       })
     end
 
-    def add_event(table_name, date, time)
-      event = new_event(table_name, date, time)
+    def add_event(table_name, date, time, user)
+      event = new_event(table_name, date, time, user)
       @service.insert_event('primary', event)
     end
 
     def find_events_on_day(date, time_bool)
       time_min, time_max = calc_time(date, time_bool)
+      # binding.pry
       @service.list_events('primary',
-                          max_results: 3,
                           time_min: time_min.to_s,
                           time_max: time_max.to_s)
     end
 
     def calc_time(date, time_bool)
-       if time_bool == "morning"
+      if time_bool == "morning"
         time_min = date.advance(hours: 9)
         time_max = date.advance(hours: 12)
       else
