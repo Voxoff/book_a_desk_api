@@ -11,14 +11,15 @@ class Api::V1::TablesController < ApplicationController
 
   def add_booking
     # need a check for already ordered.
-    if booking_params.none? { |_,v| v.nil? || v.empty? }
+    required = [:date, :time, :name]
+    if required.all? { |k| params.key?(k) }
       @calendar = Calendar::Calendar.new
-      # @table_name = Table.where(name: params[:name]).pluck(:name).first
-      @calendar.add_event(
-                          Table.find_by_name(params[:name]).first,
-                          format_date(params[:date]),
-                          params[:time],
-                          current_user
+      table_name = Table.find_by(name: params[:name]).name
+      @calendar.add_event(table_name: table_name,
+                          date: format_date(params[:date]),
+                          time: params[:time],
+                          user: current_user,
+                          title: table_name
                          )
     end
     render json: { message: "added"}
@@ -27,13 +28,11 @@ class Api::V1::TablesController < ApplicationController
   private
 
   def format_date(date)
-    puts params[:date]
     DateTime.parse(date)
   end
 
   def calendar_api(date, time)
     @calendar = Calendar::Calendar.new
-
     @calendar.find_events_on_day(date, time)
   end
 
@@ -50,9 +49,5 @@ class Api::V1::TablesController < ApplicationController
 
   def booking_params
     params.permit(:date, :time, :name)
-  end
-  #this any good???
-  def none_proc
-    Proc.new  { |x| x.none? { |k,v| v.nil? || v.empty? } }
   end
 end

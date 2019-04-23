@@ -54,18 +54,18 @@ module Calendar
         start: { date_time: time_min.to_s },
         end: { date_time: time_max.to_s },
         text: "##{user.username} (#{user.email}) has booked #{table_name}",
-        attendees: [{email: user.email.to_s}]
+        attendees: [{email: user.email.to_s}],
+        summary: "##{user.username} (#{user.email}) has booked #{table_name}"
       })
     end
 
-    def add_event(table_name, date, time, user)
-      event = new_event(table_name, date, time, user)
+    def add_event(attr = {})
+      event = new_event(attr[:table_name],attr[:date], attr[:time], attr[:user])
       @service.insert_event('primary', event)
     end
 
     def find_events_on_day(date, time_bool)
       time_min, time_max = calc_time(date, time_bool)
-      # binding.pry
       @service.list_events('primary',
                           time_min: time_min.to_s,
                           time_max: time_max.to_s)
