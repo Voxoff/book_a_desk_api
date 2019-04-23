@@ -13,7 +13,8 @@ module Calendar
 
       @oob_uri = 'urn:ietf:wg:oauth:2.0:oob'.freeze
       @application_name = 'Google Calendar API Ruby Quickstart'.freeze
-      @credentials_path = 'credentials.json'.freeze
+      # @credentials_path = 'credentials.json'.freeze
+      @credentials_path = ENV['GOOGLE_APPLICATION_CREDENTIALS']
       # The file token.yaml stores the user's access and refresh tokens, and is
       # created automatically when the authorization flow completes for the first
       # time.
