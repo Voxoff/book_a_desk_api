@@ -66,6 +66,7 @@ module Calendar
 
     def find_events_on_day(date, time_bool)
       time_min, time_max = calc_time(date, time_bool)
+      # binding.pry
       @service.list_events('primary',
                           time_min: time_min.to_s,
                           time_max: time_max.to_s)
