@@ -29,7 +29,8 @@ module Calendar
     end
 
     def authorize
-      client_id = Google::Auth::ClientId.from_hash(JSON.parse(@credentials_path))
+      #Other ways to do this??
+      client_id = Google::Auth::ClientId.from_hash(eval(@credentials_path))
       token_store = Google::Auth::Stores::FileTokenStore.new(file: @token_path)
       authorizer = Google::Auth::UserAuthorizer.new(client_id, @scope, token_store)
       user_id = 'default'
