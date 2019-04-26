@@ -15,7 +15,8 @@ module Calendar
       @oob_uri = 'urn:ietf:wg:oauth:2.0:oob'.freeze
       @application_name = 'Google Calendar API Ruby Quickstart'.freeze
       # @credentials_path = 'credentials.json'.freeze
-      @credentials_path = ENV['GOOGLE_APPLICATION_CREDENTIALS']
+      @credentials_path = JSON.parse(ENV['GOOGLE_APPLICATION_CREDENTIALS'])
+      puts "google," + @credentials_path
       # The file token.yaml stores the user's access and refresh tokens, and is
       # created automatically when the authorization flow completes for the first
       # time.
@@ -29,8 +30,7 @@ module Calendar
     end
 
     def authorize
-      #Other ways to do this??
-      client_id = Google::Auth::ClientId.from_hash(eval(@credentials_path))
+      client_id = Google::Auth::ClientId.from_hash(@credentials_path)
       token_store = Google::Auth::Stores::FileTokenStore.new(file: @token_path)
       authorizer = Google::Auth::UserAuthorizer.new(client_id, @scope, token_store)
       user_id = 'default'
