@@ -16,7 +16,7 @@ module Calendar
       @application_name = 'Google Calendar API Ruby Quickstart'.freeze
       # @credentials_path = 'credentials.json'.freeze
       @credentials_path = JSON.parse(ENV['GOOGLE_APPLICATION_CREDENTIALS'])
-      puts "google," + @credentials_path
+      puts "google, #{@credentials_path}"
       # The file token.yaml stores the user's access and refresh tokens, and is
       # created automatically when the authorization flow completes for the first
       # time.
