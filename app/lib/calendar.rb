@@ -1,5 +1,6 @@
 module Calendar
   class Calendar
+    attr_reader :service, :credentials_path
     def initialize
       @service = set_up
     end
